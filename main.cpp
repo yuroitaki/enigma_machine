@@ -13,9 +13,7 @@ using namespace std;
 int main(int argc, char** argv){
 
   try{
-    Config confg(argc,argv,"output.txt");
-    Plugboard_Reflector pb_ref(&confg);
-    Enigma enigma_machine(&confg,&pb_ref); 
+    Enigma enigma_machine(argc,argv,"output.txt"); 
     enigma_machine.encrypt();
   }
  
