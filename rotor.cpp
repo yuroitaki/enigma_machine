@@ -14,7 +14,7 @@ Rotor::Rotor(Config* config_rotor, int rotor_idt){
   notch_reached = false;
   store_encrypt(rotor_id);
   create_key();
-  shift_ground(0);
+  shift_ground(SETUP);
 }
 
 void Rotor::shift_ground(int signal){
@@ -22,10 +22,10 @@ void Rotor::shift_ground(int signal){
   int len_n = notch.size();
   int initial_pos = 0;
   
-  if(signal==0){
+  if(signal== SETUP){
     initial_pos = ground_position;
   }
-  if(signal==1){
+  if(signal== RUN){
     initial_pos = 1;
   }
   int shift_space = len - initial_pos;
@@ -42,45 +42,43 @@ void Rotor::shift_ground(int signal){
       backward_encryption[i-initial_pos] = buffer_backward_encryption[i];
     } 
   }
-  if (signal==1){
+  if (signal==RUN){
     for(int i=0;i<len_n;i++){
       if(notch[i]==backward_encryption[0]){
 	set_notch_stat(true);
-	cout << notch[i] << "hello"<< endl;
+	//	cout << notch[i] << "hello"<< endl;
       }
       else{
 	if(notch_reached != true){
 	  set_notch_stat(false);
-	  cout << "bang!" << endl;
+	  //cout << "bang!" << endl;
 	}
       }
     }
   }
-  for (int i=0;i<len;i++){
+  /*for (int i=0;i<len;i++){
     cout << forward_encryption[i] << " ";
   }cout<<endl;
   for (int i=0;i<len;i++){
     cout << backward_encryption[i] << " ";
-  }cout << endl << endl;
+    }cout << endl << endl;*/
 }
 
 void Rotor::encrypting(int& code, int signal){
   int len = forward_encryption.size();
 
-  if(signal==0){
+  if(signal==FORWARD){
     int buffer = forward_encryption[code];
-    cout << buffer << " ";
-    
+    //cout << buffer << " ";
     for (int i=0;i<len;i++){
       if (buffer == backward_encryption[i]){
 	code = i;
       }
     }
   }
-  if (signal==1){
+  if (signal==BACKWARD){
     int buffer = backward_encryption[code];
-    cout << buffer << " ";
-
+    //cout << buffer << " ";
     for (int i=0;i<len;i++){
       if(buffer == forward_encryption[i]){
 	code = i;
@@ -96,7 +94,7 @@ void Rotor::store_encrypt(int rotor_id){
   int buffer;
   int count = 0;
   
-  input_1.open(config_rot->get_file(4));
+  input_1.open(config_rot->get_file(RP));
   vector<int> buffer_num;
   while(input_1>>buffer){
     buffer_num.push_back(buffer);

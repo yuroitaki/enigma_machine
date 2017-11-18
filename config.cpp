@@ -8,13 +8,12 @@ using namespace std;
 
 #include"config.h"
 
-Config::Config(int arg_ct,char**arg_vl,const char* input_txt){
+Config::Config(int arg_ct,char**arg_vl){
   if (arg_ct < 3)
     throw 1;
   
   arg_count = arg_ct;
   arg_value = arg_vl;
-  input_file = input_txt;
   rotor_count = 0;
   
   int last_index = arg_ct-1;
@@ -27,47 +26,15 @@ Config::Config(int arg_ct,char**arg_vl,const char* input_txt){
       rotor_count++;
     }
   }
-  input_file_check();
-}
-
-void Config::input_file_check(){
-  
-  ifstream in_put;
-  in_put.open(input_file);
-
-  vector<int> input_code;
-  char buffer;
-  int num_buffer;
-  
-  if (in_put.fail()){
-    cerr << "Input file";
-    throw 11;
-  }
-  while(in_put>>buffer){
-    num_buffer = buffer - CONVERSION;
-    if ((num_buffer >= 0) && (num_buffer <=25))
-      input_code.push_back(num_buffer);
-    else{
-      cerr << "Input file";
-      throw 2;
-    }
-  }
-  if (input_code.size()==0){
-    cerr << "Input file";
-    throw 2;
-  }
-  in_put.close();
 }
 
 const char* Config::get_file(int filecode){
   switch(filecode){
-  case 1:
-    return input_file;
-  case 2: 
+  case PB: 
     return plugboard_file;
-  case 3:
+  case RF:
     return reflector_file;
-  case 4:
+  case RP:
     return rotor_pos_file; 
   default: return "No files found!";
   }

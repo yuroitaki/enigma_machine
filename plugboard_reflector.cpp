@@ -10,8 +10,8 @@ using namespace std;
 
 Plugboard_Reflector::Plugboard_Reflector(Config* confg){
   config_pr = confg;
-  store_config_pr(2);
-  store_config_pr(3);
+  store_config_pr(PB);
+  store_config_pr(RF);
 }
 
 void Plugboard_Reflector::mapping(int& code, int map_code){
@@ -21,11 +21,11 @@ void Plugboard_Reflector::mapping(int& code, int map_code){
   vector<int>* buffer_config;
   int len = 0;
 
-  if (map_code == 2){
+  if (map_code == PB){
     len = len1;
     buffer_config = &swap_config;
   }
-  if (map_code == 3){
+  if (map_code == RF){
     len = len2;
     buffer_config = &ref_config;
   }
@@ -42,7 +42,7 @@ void Plugboard_Reflector::mapping(int& code, int map_code){
 	code = (*buffer_config)[i-1];
       }
     }
-  }
+  }//cout << code << endl;
 }
 
 
@@ -53,10 +53,10 @@ void Plugboard_Reflector::store_config_pr(int store_code){
   vector<int>* buffer_vec;
   int buffer;
 
-  if(store_code == 2){
+  if(store_code == PB){
     buffer_vec = &swap_config;
   }
-  if(store_code == 3){
+  if(store_code == RF){
     buffer_vec = &ref_config;
   }
   while(in_put>>buffer){

@@ -18,5 +18,15 @@
 #define NO_ERROR					0
 
 #define CONVERSION  65
+#define PB 100
+#define RF 200
+#define RP 300
+
+#define FORWARD 1000
+#define BACKWARD 2000
+
+#define SETUP -1
+#define RUN -2
+
 
 #endif
