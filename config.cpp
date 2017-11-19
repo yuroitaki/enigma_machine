@@ -150,10 +150,6 @@ void Config::check_rf_file(){
     cerr << "Non-numeric character in reflector file: reflector.rf" <<endl;
     throw NON_NUMERIC_CHARACTER;
   }
-  if((input.fail())&&(count==0)){
-    cerr << "Reflector file: reflector.rf";
-    throw ERROR_OPENING_CONFIGURATION_FILE;
-  }
   if(count!=26){
     if(count%2!=0)
       cerr << "Incorrect (odd)"; 
@@ -219,10 +215,6 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
     cerr << "Non-numeric character in "<< rotor_id+1 << "th rotor file" << endl;
     throw NON_NUMERIC_CHARACTER;
   }
-  if((input.fail())&&(count==0)){
-    cerr << rotor_id+1 << "th rotor file";
-    throw ERROR_OPENING_CONFIGURATION_FILE;
-  }
   if(count<27){
     if(count<26)
       cerr << "Not all inputs mapped in "<< rotor_id+1 << "th rotor file" << endl;
@@ -255,10 +247,6 @@ void Config::check_rot_pos_file(){
   if((input.fail())&&(!input.eof())){
     cerr << "Non-numeric character in rotor position file: rotor.pos" <<endl;
     throw NON_NUMERIC_CHARACTER;
-  }
-  if((input.fail())&&(count==0)){
-    cerr << "Rotor position file: rotor.pos";
-    throw ERROR_OPENING_CONFIGURATION_FILE;
   }
   if(count<rotor_count){
     cerr << "No starting position for rotor " << count;
