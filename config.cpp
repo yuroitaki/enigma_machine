@@ -196,14 +196,14 @@ void Config::check_rot_pos_file(){
   vector<int>buffer_vec;
   int len = 0;
   int buffer = 10;
-  int count = -1;
+  int count = 0;
   //const char* message;
   
   input.open(rotor_pos_file);
 
   while((count<rotor_count)&&(input>>buffer)){
     if((buffer<0)||(buffer>25)){
-      cerr << message;
+      //cerr << message;
       throw INVALID_INDEX;
     }
     buffer_vec.push_back(buffer);
@@ -223,7 +223,7 @@ void Config::check_rot_pos_file(){
     }*/
   
   if(count<rotor_count){
-    cerr << "No starting position for rotor " << count;
+    cerr << "No starting position for rotor " << count+1;
     throw NO_ROTOR_STARTING_POSITION;
   }
   input.close();
