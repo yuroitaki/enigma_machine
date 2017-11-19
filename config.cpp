@@ -105,7 +105,7 @@ void Config::check_pb_rf_file(int check_code){
 
   if((len==0)||(buffer_vec[len-1]!=0)){
     if((input.fail())&&(buffer==0)){
-      cerr << message;
+      cerr << "Non-numeric character in reflector file reflector.rf";
       throw NON_NUMERIC_CHARACTER;
     }
   }
@@ -153,7 +153,7 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
       
       for (int i=0;i<len1-1;i++){
 	if(buffer1_vec[i]==buffer1_vec[len1-1]){
-	  cerr << rotor_id+1 << message;
+	  cerr <<"Invalid mapping of input "<< len1-1 <<" to output "<<buffer1_vec[len1-1]<<  " (output" <<buffer_vec[len1-1] << " is already mapped to from input" << i <<")";
 	  throw INVALID_ROTOR_MAPPING;
 	}
       }
@@ -176,7 +176,7 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
   }
   if((len==0)||(buffer_vec[len-1]!=0)){
     if((input.fail())&&(buffer==0)){
-      cerr << rotor_id+1 << message;
+      cerr << "Non-numeric character for mapping in rotor file rotor.rot";
       throw NON_NUMERIC_CHARACTER;
     }
   }
@@ -185,7 +185,7 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
     throw ERROR_OPENING_CONFIGURATION_FILE;
   }
   if(count<27){
-    cerr << rotor_id+1 << message << "less than 27";
+    cerr << "Not all inputs mapped in rotor file: rotor.rot";
     throw INVALID_ROTOR_MAPPING;
   }
   input.close();
@@ -196,8 +196,8 @@ void Config::check_rot_pos_file(){
   vector<int>buffer_vec;
   int len = 0;
   int buffer = 10;
-  int count = 0;
-  const char* message = "The rotor position file";
+  int count = -1;
+  //const char* message;
   
   input.open(rotor_pos_file);
 
@@ -213,17 +213,17 @@ void Config::check_rot_pos_file(){
     
   if((len==0)||(buffer_vec[len-1]!=0)){
     if((input.fail())&&(buffer==0)){
-      cerr << message;
+      cerr << "Non-numeric character in rotor positions file rotor.pos"; 
       throw NON_NUMERIC_CHARACTER;
     }
   }
-  if((input.fail())&&(count==0)){
+  /*if((input.fail())&&(count==0)){
     cerr << message;
     throw ERROR_OPENING_CONFIGURATION_FILE;
-  }
+    }*/
   
   if(count<rotor_count){
-    cerr << message;
+    cerr << "No starting position for rotor " << count;
     throw NO_ROTOR_STARTING_POSITION;
   }
   input.close();

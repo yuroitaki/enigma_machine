@@ -57,7 +57,7 @@ void Enigma::encrypt(int& code){
   }
   plugb_ref->mapping(code,PB);
   //cout<< code << " ";
-  cout << static_cast<char>(code+CONVERSION) << " ";
+  cout << static_cast<char>(code+CONVERSION);
 }
 
 void Enigma::create_rotor(int no_rotor){
@@ -87,6 +87,7 @@ void Enigma::run(){
       encrypt(code);
       count ++;
     }else{
+      cerr << charac;
       throw INVALID_INPUT_CHARACTER;
     }
   }
