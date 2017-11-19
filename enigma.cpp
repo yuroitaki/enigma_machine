@@ -74,3 +74,24 @@ void Enigma::create_plug_ref(){
 void Enigma::create_config(int argc,char**argv){
   config_obj = new Config(argc,argv);
 }
+
+void Enigma::run(){
+
+  char charac;
+  int code;
+  int count = 0;
+  
+  while(cin >> ws >> charac){ 
+    if((charac>=CONVERSION)&&(charac<=CONVERSION+25)){
+      code = static_cast<int>(charac)-CONVERSION;
+      encrypt(code);
+      count ++;
+    }else{
+      throw INVALID_INPUT_CHARACTER;
+    }
+  }
+  if ((count==0)&&(cin.fail())){
+    cerr << "The input file";
+    throw ERROR_OPENING_CONFIGURATION_FILE;
+  }
+}

@@ -12,12 +12,14 @@ class Config{
   const char* reflector_file;
   vector<const char*> rotor_files;
   const char* rotor_pos_file;
-  
  public:
   Config(int arg_ct,char**arg_vl);
   const char* get_file(int filecode);
   vector<const char*>* get_rotor_files();
   int get_rotor_number();
+  void check_pb_rf_file(int check_code);
+  void check_rot_file(const char* rot_file, int rotor_id);
+  void check_rot_pos_file();
 };
 
 #endif

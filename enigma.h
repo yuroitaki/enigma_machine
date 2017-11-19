@@ -15,5 +15,6 @@ class Enigma{
   void create_plug_ref();
   void create_rotor(int no_rotor);
   void encrypt(int& code);
+  void run();
 };
 
