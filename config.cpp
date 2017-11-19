@@ -14,7 +14,6 @@ Config::Config(int arg_ct,char**arg_vl){
   arg_count = arg_ct;
   arg_value = arg_vl;
   rotor_count = 0;
-
   
   if ((arg_ct < 3)||(arg_ct ==4))
     throw INSUFFICIENT_NUMBER_OF_PARAMETERS;
@@ -30,14 +29,14 @@ Config::Config(int arg_ct,char**arg_vl){
       rotor_count++;
     }
   }
-  check_pb_rf_file(PB);
-  check_pb_rf_file(RF);
+  check_pb_file();
+  check_rf_file();
 
   if(arg_ct >3){
-    check_rot_pos_file();
     for (int i=0;i<rotor_count;i++){
       check_rot_file(rotor_files[i],i);   
     }
+    check_rot_pos_file();
   }
 }
 
@@ -61,99 +60,141 @@ int Config::get_rotor_number(){
   return rotor_count;
 }
 
-void Config::check_pb_rf_file(int check_code){
+void Config::check_pb_file(){
   ifstream input;
   vector<int>buffer_vec;
   int len = 0;
-  int buffer = 10;
-  char buffer2;
+  int buffer;
+  char charac;
   int count = 0;
-  int config_error, parameter_error;
-  const char* filename;
-  const char* message;
-
-  if (check_code == PB){
-    filename = plugboard_file;
-    message = "The plugboard file";
-    config_error = IMPOSSIBLE_PLUGBOARD_CONFIGURATION;
-    parameter_error = INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS;
-  }
-  if (check_code == RF){
-    filename = reflector_file;
-    message = "The reflector file";
-    config_error = INVALID_REFLECTOR_MAPPING;
-    parameter_error = INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS;
-  }
-  
-  input.open(filename);
+  input.open(plugboard_file);
 
   while((count<26)&&(input>>buffer)){
+   
+    input.get(charac);
+    if(!isspace(charac)){
+      cerr << "Non-numeric character in plugboard file: plugboard.pb" <<endl;
+      throw NON_NUMERIC_CHARACTER;
+    } 
     if((buffer<0)||(buffer>25)){
-      cerr << message;
+      cerr << "Invalid index in plugboard file: plugboard.pb" <<endl;
       throw INVALID_INDEX;
     }
     buffer_vec.push_back(buffer);
     len = buffer_vec.size();
     
     for (int i=0;i<len-1;i++){
-      if(buffer_vec[i]==buffer_vec[len-1])
-	throw config_error;
+      if(buffer_vec[i]==buffer_vec[len-1]){
+	if((i%2==0)&&(len-1-i==1))
+	  cerr <<"Invalid connection of plugboard contact "<< buffer_vec[i] << " as it is being connected to itself" << endl;
+	else
+	  cerr << "Invalid connection of plugboard contact "<< buffer_vec[i] << " as it is being connected to more than one other contact" <<endl;
+	throw IMPOSSIBLE_PLUGBOARD_CONFIGURATION;
+      }
     }count++;
   }
-  if((count==26)&&(input>>buffer2))
-    throw parameter_error;
-
-  if((len==0)||(buffer_vec[len-1]!=0)){
-    if((input.fail())&&(buffer==0)){
-      cerr << "Non-numeric character in reflector file reflector.rf";
-      throw NON_NUMERIC_CHARACTER;
-    }
+  if((count==26)&&(input>>charac)){
+    cerr << "Exceeded the maximum";
+    throw INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS;
   }
-  if(check_code==PB){
-    if(count%2!=0)
-      throw parameter_error;
+  if((input.fail())&&(!input.eof())){
+    cerr << "Non-numeric character in plugboard file: plugboard.pb" <<endl;
+    throw NON_NUMERIC_CHARACTER;
   }
-  if(check_code==RF){
-    if((input.fail())&&(count==0)){
-      cerr << message;
-      throw ERROR_OPENING_CONFIGURATION_FILE;
-    }
-    if(count!=26)
-      throw parameter_error;
-  }  
+  if(count%2!=0){
+    cerr << "Incorrect";
+    throw INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS;
+  }
   input.close();
 }
 
-void Config::check_rot_file(const char* rot_file,int rotor_id){
+
+void Config::check_rf_file(){
   ifstream input;
   vector<int>buffer_vec;
-  vector<int>buffer1_vec;
-  vector<int>buffer2_vec;
   int len = 0;
-  int len1 = 0;
-  int len2 = 0;
-  int buffer = 10;
-  char buffer2;
+  int buffer;
+  char charac;
   int count = 0;
-  const char* message = "th rotor file";
-  
-  input.open(rot_file);
+  input.open(reflector_file);
 
-  while((count<52)&&(input>>buffer)){
+  while((count<26)&&(input>>buffer)){
+
+    input.get(charac);
+    if(!isspace(charac)){
+      cerr << "Non-numeric character in reflector file: reflector.rf" <<endl;
+      throw NON_NUMERIC_CHARACTER;
+    } 
     if((buffer<0)||(buffer>25)){
-      cerr << rotor_id+1 << message;
+      cerr << "Invalid index in reflector file: reflector.rf" <<endl;
       throw INVALID_INDEX;
     }
     buffer_vec.push_back(buffer);
     len = buffer_vec.size();
     
+    for (int i=0;i<len-1;i++){
+      if(buffer_vec[i]==buffer_vec[len-1]){
+	if((i%2==0)&&(len-1-i==1))
+	  cerr <<"Invalid connection of reflector contact "<< buffer_vec[i] << " as it is being connected to itself" << endl;
+	else
+	  cerr << "Invalid connection of reflector contact "<< buffer_vec[i] << " as it is being connected to more than one other contact" << endl;
+	throw INVALID_REFLECTOR_MAPPING;
+      }
+    }count++;
+  }
+  if((count==26)&&(input>>charac)){
+    cerr << "Exceeded the maximum";
+    throw INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS;
+  }
+  if((input.fail())&&(!input.eof())){
+    cerr << "Non-numeric character in reflector file: reflector.rf" <<endl;
+    throw NON_NUMERIC_CHARACTER;
+  }
+  if((input.fail())&&(count==0)){
+    cerr << "Reflector file: reflector.rf";
+    throw ERROR_OPENING_CONFIGURATION_FILE;
+  }
+  if(count!=26){
+    if(count%2!=0)
+      cerr << "Incorrect (odd)"; 
+    else
+      cerr << "Insufficient";
+    throw INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS;
+  }
+  input.close();
+}
+
+
+void Config::check_rot_file(const char* rot_file,int rotor_id){
+  ifstream input;
+  vector<int>buffer1_vec;
+  vector<int>buffer2_vec;
+  int len1 = 0;
+  int len2 = 0;
+  int buffer;
+  char charac;
+  int count = 0;
+  
+  input.open(rot_file);
+
+  while((count<52)&&(input>>buffer)){
+
+    input.get(charac);
+    if(!isspace(charac)){
+      cerr << "Non-numeric character in "<< rotor_id+1 << "th rotor file" << endl; 
+      throw NON_NUMERIC_CHARACTER;
+    }
+    if((buffer<0)||(buffer>25)){
+      cerr << "Invalid index in "<< rotor_id+1 << "th rotor file" << endl;
+      throw INVALID_INDEX;
+    }
     if(count < 26){
       buffer1_vec.push_back(buffer);
       len1 = buffer1_vec.size();
       
       for (int i=0;i<len1-1;i++){
 	if(buffer1_vec[i]==buffer1_vec[len1-1]){
-	  cerr <<"Invalid mapping of input "<< len1-1 <<" to output "<<buffer1_vec[len1-1]<<  " (output" <<buffer_vec[len1-1] << " is already mapped to from input" << i <<")";
+	  cerr <<"Invalid mapping of input "<< len1-1 <<" to output "<<buffer1_vec[len1-1]<<  " (output " <<buffer1_vec[len1-1] << " is already mapped to from input " << i <<") in "<< rotor_id+1 << "th rotor file" << endl;
 	  throw INVALID_ROTOR_MAPPING;
 	}
       }
@@ -163,29 +204,30 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
       
       for (int i=0;i<len2-1;i++){
 	if(buffer2_vec[i]==buffer2_vec[len2-1]){
-	  cerr << rotor_id+1 << message;
+	  cerr <<"Repeated placing of notch "<< buffer2_vec[len2-1] << " in " << rotor_id+1 << "th rotor file" << endl;
 	  throw INVALID_ROTOR_MAPPING;
 	}
       }
     }
     count++;
   }
-  if((count==52)&&(input>>buffer2)){
-    cerr << rotor_id+1 << message << "more than 52";
+  if((count==52)&&(input>>charac)){
+    cerr << "Exceeded maximum number of notches allowed in "<< rotor_id+1 << "th rotor file" << endl;
     throw INVALID_ROTOR_MAPPING;
   }
-  if((len==0)||(buffer_vec[len-1]!=0)){
-    if((input.fail())&&(buffer==0)){
-      cerr << "Non-numeric character for mapping in rotor file rotor.rot";
-      throw NON_NUMERIC_CHARACTER;
-    }
+  if((input.fail())&&(!input.eof())){
+    cerr << "Non-numeric character in "<< rotor_id+1 << "th rotor file" << endl;
+    throw NON_NUMERIC_CHARACTER;
   }
   if((input.fail())&&(count==0)){
-    cerr << rotor_id+1 << message;
+    cerr << rotor_id+1 << "th rotor file";
     throw ERROR_OPENING_CONFIGURATION_FILE;
   }
   if(count<27){
-    cerr << "Not all inputs mapped in rotor file: rotor.rot";
+    if(count<26)
+      cerr << "Not all inputs mapped in "<< rotor_id+1 << "th rotor file" << endl;
+    else
+      cerr << "Missing notch position in "<< rotor_id+1 << "th rotor file" << endl;
     throw INVALID_ROTOR_MAPPING;
   }
   input.close();
@@ -193,37 +235,33 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
 
 void Config::check_rot_pos_file(){
   ifstream input;
-  vector<int>buffer_vec;
-  int len = 0;
-  int buffer = 10;
+  int buffer;
   int count = 0;
-  //const char* message;
+  char charac;
   
   input.open(rotor_pos_file);
 
   while((count<rotor_count)&&(input>>buffer)){
-    if((buffer<0)||(buffer>25)){
-      //cerr << message;
-      throw INVALID_INDEX;
-    }
-    buffer_vec.push_back(buffer);
-    count++;
-  }
-  len = buffer_vec.size();
-    
-  if((len==0)||(buffer_vec[len-1]!=0)){
-    if((input.fail())&&(buffer==0)){
-      cerr << "Non-numeric character in rotor positions file rotor.pos"; 
+    input.get(charac);
+    if(!isspace(charac)){
+      cerr << "Non-numeric character in rotor position file: rotor.pos" <<endl;
       throw NON_NUMERIC_CHARACTER;
-    }
+    } 
+    if((buffer<0)||(buffer>25)){
+      cerr << "Invalid index in rotor position file: rotor.pos" <<endl;
+      throw INVALID_INDEX;
+    }count++;
   }
-  /*if((input.fail())&&(count==0)){
-    cerr << message;
+  if((input.fail())&&(!input.eof())){
+    cerr << "Non-numeric character in rotor position file: rotor.pos" <<endl;
+    throw NON_NUMERIC_CHARACTER;
+  }
+  if((input.fail())&&(count==0)){
+    cerr << "Rotor position file: rotor.pos";
     throw ERROR_OPENING_CONFIGURATION_FILE;
-    }*/
-  
+  }
   if(count<rotor_count){
-    cerr << "No starting position for rotor " << count+1;
+    cerr << "No starting position for rotor " << count;
     throw NO_ROTOR_STARTING_POSITION;
   }
   input.close();

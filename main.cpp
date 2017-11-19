@@ -26,15 +26,13 @@ int main(int argc, char** argv){
       cerr << " is not a valid input character (input characters must be upper case letters A-Z)!" << endl;
       return 2;
     case INVALID_INDEX:
-      cerr << " has invalid index." << endl;
       return 3;
     case NON_NUMERIC_CHARACTER:
       return 4;
     case IMPOSSIBLE_PLUGBOARD_CONFIGURATION:
-      cerr << "The plugboard file has impossible plugboard configuration." <<endl;
       return 5;
     case INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS:
-      cerr << "Non-numeric character in reflector file reflector.rf"<<endl;
+      cerr << " number of parameters in plugboard file: plugboard.pb"<<endl;
       return 6;
     case INVALID_ROTOR_MAPPING:
       return 7;
@@ -42,15 +40,14 @@ int main(int argc, char** argv){
       cerr << " in rotor position file: rotor.pos" << endl;
       return 8;
     case INVALID_REFLECTOR_MAPPING:
-      cerr << "The reflector file has invalid reflector mapping." << endl;
       return 9;
     case INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS:
-      cerr << "Incorrect (odd) number of parameters in reflector file reflector.rf" <<endl;
+      cerr << " number of parameters in reflector file: reflector.rf" <<endl;
       return 10;
     case ERROR_OPENING_CONFIGURATION_FILE:
-      cerr << " cannot be opened correctly." << endl;
+      cerr << " cannot be opened correctly or it's empty (null or contains only space character)" << endl;
       return 11;
-    default: cerr << "Unknown error." << endl;     
+    default: cerr << "Unknown error" << endl;     
     }
   }
   return 0;
