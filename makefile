@@ -1,3 +1,6 @@
+# Makefile 
+# used in C++2 Assessed Exercise 
+
 OBJ = main.o enigma.o config.o plugboard_reflector.o rotor.o
 EXE = enigma
 CXX = g++

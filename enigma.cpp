@@ -1,8 +1,13 @@
+/* Implementation file "enigma.cpp" */
+
+/* used in C++2 Assessed Exercise */
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
 #include <algorithm>
+#include<cctype>
 
 using namespace std;
 
@@ -22,67 +27,67 @@ Enigma::~Enigma(){
   }
 }
 
+/*begin the encryption/decryption process*/
 void Enigma::encrypt(int& code){
 
   int len = rotor_vector.size();
-  //cout << code << " ";
-  plugb_ref->mapping(code,PB);
-  //cout << code << endl;
+  
+  plugb_ref->mapping(code,PB);             //plugboard forward mapping
   
   if (len!=0){
     Rotor* r_last = rotor_vector[len-1];
-    r_last->shift_ground(RUN);
+    r_last->shift_ground(RUN);             //rotate the right-hand rotor before circuit closes
     
     for (int j=len-1;j>0;j--){
-      if ((rotor_vector[j])->get_notch_stat()){
+      if ((rotor_vector[j])->get_notch_stat()){    //if notch is reached, engage the rotor on the left
 	rotor_vector[j-1]->shift_ground(RUN);
 	rotor_vector[j]->set_notch_stat(false);
       }
       }
     for(int j=len-1;j>=0;j--){
-      rotor_vector[j]->encrypting(code,FORWARD);
-      //cout << code << " ";
-      //	cout << endl;
+      rotor_vector[j]->encrypting(code,FORWARD);    //rotor forward mapping
     }
   }
-  plugb_ref->mapping(code,RF);
-  //    cout << code << endl;
+
+  plugb_ref->mapping(code,RF);                     //reflector mapping
     
   if(len!=0){
     for(int j=0;j<len;j++){
-      rotor_vector[j]->encrypting(code,BACKWARD);
-      //	cout << code << " ";
-      //cout << endl;
+      rotor_vector[j]->encrypting(code,BACKWARD);      //rotor backward mapping
     }
   }
-  plugb_ref->mapping(code,PB);
-  //cout<< code << " ";
-  cout << static_cast<char>(code+CONVERSION);
+
+  plugb_ref->mapping(code,PB);                   //plugboard backward mapping
+
+  cout << static_cast<char>(code+CONVERSION);        //print result to output stream
 }
 
+/* create the Rotor class */
 void Enigma::create_rotor(int no_rotor){
   for (int i=0;i<no_rotor;i++){
-    Rotor* rot = new Rotor(config_obj,i);
+    Rotor* rot = new Rotor(config_obj,i);      //config_obj = pointer to the Configuration class
     rotor_vector.push_back(rot);
   }
 }    
 
+/* create the Plugboard & Reflector class */
 void Enigma::create_plug_ref(){
   plugb_ref = new Plugboard_Reflector(config_obj);
 }
 
+/* create the Configuration class */
 void Enigma::create_config(int argc,char**argv){
   config_obj = new Config(argc,argv);
 }
 
+/* begin passing in the message to the encrypt function */
 void Enigma::run(){
-
   char charac;
   int code;
   int count = 0;
   
   while(cin >> ws >> charac){ 
-    if((charac>=CONVERSION)&&(charac<=CONVERSION+25)){
+    if((charac>=CONVERSION)&&(charac<=CONVERSION+25)){        
       code = static_cast<int>(charac)-CONVERSION;
       encrypt(code);
       count ++;
@@ -91,7 +96,7 @@ void Enigma::run(){
       throw INVALID_INPUT_CHARACTER;
     }
   }
-  if ((count==0)&&(cin.fail())){
+  if ((count==0)&&(cin.fail())){           
     cerr << "The input file";
     throw ERROR_OPENING_CONFIGURATION_FILE;
   }

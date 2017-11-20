@@ -1,3 +1,7 @@
+/* Header file "config.h" */
+
+/* used in C++2 Assessed Exercise */
+
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -14,10 +18,10 @@ class Config{
   const char* rotor_pos_file;
  public:
   Config(int arg_ct,char**arg_vl);
-  const char* get_file(int filecode);
-  vector<const char*>* get_rotor_files();
-  int get_rotor_number();
-  void check_pb_file();
+  const char* get_file(int filecode);       //for other classes to obtain their respective config filename
+  vector<const char*>* get_rotor_files();  
+  int get_rotor_number();                   // for Enigma class to obtain the number of rotors used
+  void check_pb_file();                     // for validating the relevant config files 
   void check_rf_file();
   void check_rot_file(const char* rot_file, int rotor_id);
   void check_rot_pos_file();

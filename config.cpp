@@ -1,3 +1,7 @@
+/* Implementation file "config.cpp" */
+
+/* used in C++2 Assessed Exercise */
+
 #include<iostream>
 #include<fstream>
 #include<vector>
@@ -9,8 +13,9 @@ using namespace std;
 
 #include"config.h"
 
-Config::Config(int arg_ct,char**arg_vl){
-  
+/*The Configuration class is similar to an input component of a macine, in which it handles and validates the configuration files of all the components  */
+
+Config::Config(int arg_ct,char**arg_vl){      
   arg_count = arg_ct;
   arg_value = arg_vl;
   rotor_count = 0;
@@ -40,6 +45,7 @@ Config::Config(int arg_ct,char**arg_vl){
   }
 }
 
+/*for other classes to obtain their respective config filename*/
 const char* Config::get_file(int filecode){
   switch(filecode){
   case PB: 
@@ -60,6 +66,11 @@ int Config::get_rotor_number(){
   return rotor_count;
 }
 
+/* Config File Check - each component's config file is checked separately despite the repetition of similar checking functions, as the same function differs slightly from another to cater for each component */
+
+/* For the file check of Reflector, Rotor, Rotor Position, a file that is empty or contains only white space character will be regarded as having insufficient mapping parameters */
+
+/* for validating the plugboard config file */
 void Config::check_pb_file(){
   ifstream input;
   vector<int>buffer_vec;
@@ -69,10 +80,10 @@ void Config::check_pb_file(){
   int count = 0;
   input.open(plugboard_file);
 
-  while((count<26)&&(input>>buffer)){
+  while((count<26)&&(input>>buffer)){           
    
     input.get(charac);
-    if(!isspace(charac)){
+    if(!isspace(charac)){                 //check if the next character is a white space char or not
       cerr << "Non-numeric character in plugboard file: plugboard.pb" <<endl;
       throw NON_NUMERIC_CHARACTER;
     } 
@@ -80,7 +91,7 @@ void Config::check_pb_file(){
       cerr << "Invalid index in plugboard file: plugboard.pb" <<endl;
       throw INVALID_INDEX;
     }
-    buffer_vec.push_back(buffer);
+    buffer_vec.push_back(buffer);      //store the config value in a vector for mapping check
     len = buffer_vec.size();
     
     for (int i=0;i<len-1;i++){
@@ -93,11 +104,11 @@ void Config::check_pb_file(){
       }
     }count++;
   }
-  if((count==26)&&(input>>charac)){
+  if((count==26)&&(input>>charac)){            
     cerr << "Exceeded the maximum";
     throw INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS;
   }
-  if((input.fail())&&(!input.eof())){
+  if((input.fail())&&(!input.eof())){            
     cerr << "Non-numeric character in plugboard file: plugboard.pb" <<endl;
     throw NON_NUMERIC_CHARACTER;
   }
@@ -108,7 +119,7 @@ void Config::check_pb_file(){
   input.close();
 }
 
-
+/* for validating the reflector config file */
 void Config::check_rf_file(){
   ifstream input;
   vector<int>buffer_vec;
@@ -160,7 +171,7 @@ void Config::check_rf_file(){
   input.close();
 }
 
-
+/* for validating the rotor config file */
 void Config::check_rot_file(const char* rot_file,int rotor_id){
   ifstream input;
   vector<int>buffer1_vec;
@@ -184,7 +195,7 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
       cerr << "Invalid index in "<< rotor_id+1 << "th rotor file" << endl;
       throw INVALID_INDEX;
     }
-    if(count < 26){
+    if(count < 26){                    //to check if the rotor mapping is valid
       buffer1_vec.push_back(buffer);
       len1 = buffer1_vec.size();
       
@@ -194,7 +205,7 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
 	  throw INVALID_ROTOR_MAPPING;
 	}
       }
-    }else{
+    }else{                             //to check if the notch position is valid
       buffer2_vec.push_back(buffer);
       len2 = buffer2_vec.size();
       
@@ -225,6 +236,7 @@ void Config::check_rot_file(const char* rot_file,int rotor_id){
   input.close();
 }
 
+/* for validating the rotor position config file */
 void Config::check_rot_pos_file(){
   ifstream input;
   int buffer;

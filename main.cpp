@@ -1,20 +1,27 @@
+/* C++2 Assessed Exercise*/
+
+/* The main purpose of this program is to simulate an Enigma machine. It will encrypt messages that is passed to it on the standard input stream, alongside the configuration files through the command line arguments, in which then the result will be printed on the standard output stream. Any errors caused by the configuration files or input file will cause the program to return an error code and exit. To decrypt a message, please use the exact same configuration files as to how the message was encrypted. */
+
 
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
 #include<algorithm>
+#include<cctype>
 
 using namespace std;
 
 #include "enigma.h"
-#include "errors.h"
-
 
 int main(int argc, char** argv){
 
   try{
+    
+  /*Construct the components of enigma and store the configuration info in each component after file checks */
     Enigma enigma_machine(argc,argv);
+
+  /*Pass in the message from input for encryption/decryption and print the result on the output stream */
     enigma_machine.run();
   }
 
