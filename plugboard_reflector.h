@@ -15,5 +15,5 @@ class Plugboard_Reflector{
  public:
   Plugboard_Reflector(Config* confg);
   void store_config_pr(int store_code);       //to store the mapping configuration
-  void mapping(int& code,int map_code);       // to map/reflect the input letter
+  void mapping(int& code,int map_code);       //to map/reflect the input letter
 };

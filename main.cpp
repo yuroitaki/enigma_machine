@@ -1,6 +1,6 @@
 /* C++2 Assessed Exercise*/
 
-/* The main purpose of this program is to simulate an Enigma machine. It will encrypt messages that is passed to it on the standard input stream, alongside the configuration files through the command line arguments, in which then the result will be printed on the standard output stream. Any errors caused by the configuration files or input file will cause the program to return an error code and exit. To decrypt a message, please use the exact same configuration files as to how the message was encrypted. */
+/* The main purpose of this program is to simulate an Enigma machine. It will encrypt messages that is passed to it on the standard input stream, alongside the configuration files through the command line arguments, with the following order: "plugboard file", "reflector file", "rotor file (any number of this)","rotor position file (if there is one or more rotor files)". The result will be printed on the standard output stream. Any errors caused by the configuration files or input file will cause the program to return an error code and exit, and an error message will be printed on the standard error stream. To decrypt a message, please use the exact same configuration files as to how the message was encrypted. */
 
 
 #include <iostream>
@@ -53,7 +53,7 @@ int main(int argc, char** argv){
       cerr << " number of parameters in reflector file: reflector.rf" <<endl;
       return 10;
     case ERROR_OPENING_CONFIGURATION_FILE:
-      cerr << " cannot be opened correctly or it's empty (null or contains only space character)" << endl;
+      cerr << " cannot be opened correctly or it's empty (null or contains only white space character)" << endl;
       return 11;
     default: cerr << "Unknown error" << endl;     
     }

@@ -18,9 +18,9 @@ class Config{
   const char* rotor_pos_file;
  public:
   Config(int arg_ct,char**arg_vl);
-  const char* get_file(int filecode);       //for other classes to obtain their respective config filename
+  const char* get_file(int filecode);       //for other classes to obtain their respective config file name
   vector<const char*>* get_rotor_files();  
-  int get_rotor_number();                   // for Enigma class to obtain the number of rotors used
+  int get_rotor_number();                   // for Enigma class to obtain the number of rotors inputted
   void check_pb_file();                     // for validating the relevant config files 
   void check_rf_file();
   void check_rot_file(const char* rot_file, int rotor_id);

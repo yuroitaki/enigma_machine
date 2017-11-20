@@ -11,11 +11,11 @@ class Rotor{
   vector<int> backward_encryption;
   vector<int> notch;
   int ground_position;                        //ground position = initial position of the rotor
-  int rotor_id;                               //rotor id '0' means the the leftmost rotor
+  int rotor_id;                               //rotor id '0' means the the leftmost rotor and so on
   bool notch_reached;                         
  public:
   Rotor(Config* config_rotor, int rotor_idt);
-  void shift_ground(int signal);              //to rotate the rotor to shift the position
+  void shift_ground(int signal);              //to rotate the rotor to shift the initial position
   void encrypting(int& code,int signal);      //for mapping of the input letter
   void store_encrypt(int rotor_id);           //to store the mapping config
   void set_notch_stat(bool stat);             //to set the 'notch_reached' status 

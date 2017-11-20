@@ -53,7 +53,7 @@ void Plugboard_Reflector::mapping(int& code, int map_code){
 /*to store the mapping configuration*/
 void Plugboard_Reflector::store_config_pr(int store_code){
   ifstream in_put;
-  in_put.open(config_pr->get_file(store_code));      //to get the file name from the class Config
+  in_put.open(config_pr->get_file(store_code));      //to get the file name from the Config class
   
   vector<int>* buffer_vec;
   int buffer;

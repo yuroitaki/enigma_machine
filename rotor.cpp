@@ -22,13 +22,13 @@ Rotor::Rotor(Config* config_rotor, int rotor_idt){
   shift_ground(SETUP);
 }
 
-/*to rotate the rotor to shift the position*/
+/*to rotate the rotor to shift the initial position*/
 void Rotor::shift_ground(int signal){              
   int len = forward_encryption.size();
   int len_n = notch.size();
   int initial_pos = 0;
   
-  if(signal== SETUP){           //signal to differentiate btwn the rotation during initial setup and mapping
+  if(signal== SETUP){           //signal to differentiate btwn the rotation during initial setup or mapping
     initial_pos = ground_position;
   }
   if(signal== RUN){
@@ -38,7 +38,7 @@ void Rotor::shift_ground(int signal){
   vector<int> buffer_forward_encryption = forward_encryption;     
   vector<int> buffer_backward_encryption = backward_encryption;
    
-  for(int i=0;i<len;i++){                 //shuffle function
+  for(int i=0;i<len;i++){                 //shuffle/shift function
     if(i<initial_pos){           
       forward_encryption[i+shift_space]=buffer_forward_encryption[i];
       backward_encryption[i+shift_space]=buffer_backward_encryption[i];

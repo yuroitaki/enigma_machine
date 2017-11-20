@@ -13,7 +13,7 @@ using namespace std;
 
 #include"config.h"
 
-/*The Configuration class is similar to an input component of a macine, in which it handles and validates the configuration files of all the components  */
+/*The Configuration class is similar to an input component of a machine, in which it handles and validates the configuration files of all the components  */
 
 Config::Config(int arg_ct,char**arg_vl){      
   arg_count = arg_ct;
@@ -45,7 +45,7 @@ Config::Config(int arg_ct,char**arg_vl){
   }
 }
 
-/*for other classes to obtain their respective config filename*/
+/*for other classes to obtain their respective config file name*/
 const char* Config::get_file(int filecode){
   switch(filecode){
   case PB: 
@@ -66,9 +66,9 @@ int Config::get_rotor_number(){
   return rotor_count;
 }
 
-/* Config File Check - each component's config file is checked separately despite the repetition of similar checking functions, as the same function differs slightly from another to cater for each component */
+/* Config File Check - each component's config file is checked separately despite the repetition of similar checking functions, as the same function differs slightly from one another to cater for each component */
 
-/* For the file check of Reflector, Rotor, Rotor Position, a file that is empty or contains only white space character will be regarded as having insufficient mapping parameters */
+/* For the file check of Reflector, Rotor & Rotor Position, the error where a file is empty or contains only white space character will be regarded as having insufficient mapping parameters */
 
 /* for validating the plugboard config file */
 void Config::check_pb_file(){

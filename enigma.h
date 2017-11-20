@@ -19,6 +19,6 @@ class Enigma{
   void create_plug_ref();                    //create the Plugboard & Reflector class  
   void create_rotor(int no_rotor);           //create the Rotor class
   void encrypt(int& code);                   //begin the encryption/decryption process
-  void run();                                //begin passing in the message to the encryption function 
+  void run();                                //begin passing in the message to the encrypt function 
 };
 
